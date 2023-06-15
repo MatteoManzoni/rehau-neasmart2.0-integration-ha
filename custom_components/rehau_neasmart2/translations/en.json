@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Cannot connect to Modbus/Rest shim server",
+            "too_many_zones": "Too many zones specified, maximum is 48",
+            "too_many_mixg": "Too many mixed groups specified, maximum is 3",
+            "too_many_dehumidificators": "Too many dehumidificators specified, maximum is 9",
+            "invalid_dehumidificator_index": "Invalid dehumidificator index specified, valid indexes are between 1 and 9",
+            "too_many_extra_pump": "Too many pumps specified, maximum is 5",
+            "invalid_pump_index": "Invalid pump index specified, valid indexes are between 1 and 5",
+            "unknown": "Unknown error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "climate_system_name": "Show name of the Climate Control System",
+                    "neasmart_gw_server_host": "Address of the server running the Modbus/REST interface",
+                    "neasmart_gw_server_port": "REST port of the server running the Modbus/REST interface",
+                    "zones": "Comma separated list of the zones to configure",
+                    "mixed_groups": "Number of Mixed Groups to configure",
+                    "dehumidificators_regs_mapping": "Comma separated list of registers addresses mapping to Dehumidificators",
+                    "pumps_regs_mapping": "Comma separated list of registers addresses mapping to Pumps"
+                }
+            }
+        }
+    }
+}

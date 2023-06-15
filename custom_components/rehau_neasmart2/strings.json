@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "climate_system_name": "[%key:common::config_flow::data::climate_system_name%]",
+          "neasmart_gw_server_host": "[%key:common::config_flow::data::neasmart_gw_server_host%]",
+          "neasmart_gw_server_port": "[%key:common::config_flow::data::neasmart_gw_server_port%]",
+          "zones": "[%key:common::config_flow::data::zones%]",
+          "mixed_groups": "[%key:common::config_flow::data::mixed_groups%]",
+          "dehumidificators_regs_mapping": "[%key:common::config_flow::data::dehumidificators_regs_mapping%]",
+          "pumps_regs_mapping": "[%key:common::config_flow::data::pumps_regs_mapping%]"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "too_many_zones": "[%key:common::config_flow::error::too_many_zones%]",
+      "too_many_mixg": "[%key:common::config_flow::error::too_many_mixg%]",
+      "too_many_dehumidificators": "[%key:common::config_flow::error::too_many_dehumidificators%]",
+      "invalid_dehumidificator_index": "[%key:common::config_flow::error::invalid_dehumidificator_index%]",
+      "too_many_extra_pump": "[%key:common::config_flow::error::too_many_extra_pump%]",
+      "invalid_pump_index": "[%key:common::config_flow::error::invalid_pump_index%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+    }
+  }
+}
