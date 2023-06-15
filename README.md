@@ -3,7 +3,7 @@
 
 **Integration between Rehau Neasmart 2.0 Climate Control Systems and Homeassistant**
 
-This integration leverages a dedicated add-on to shim the Sysbus protocol (ModbusRTU) of the heating system to something easy to digest with an integration (set of REST APIs)
+This integration leverages a dedicated add-on to shim the Sysbus protocol (ModbusRTU) of the heating system to something easy to digest with an integration (set of REST APIs) [which you can find here](https://github.com/MatteoManzoni/RehauNeasmart2.0_Gateway)
 
 ### How to install
 
