@@ -139,7 +139,7 @@ class RehauNeasmart2MixedGroup:
 
     def __init__(self, mixedgroup_id: int, hub: RehauNeasmart2ClimateControlSystem) -> None:
         self._id = f"{hub.id}_{mixedgroup_id}"
-        self.name = f"{hub.name} #{mixedgroup_id} Mixed Group"
+        self.name = f"Mixed Group #{mixedgroup_id}"
         self.hub = hub
         self.model = "Mixed Group w/ 24/230 Pump and 0-10v controlled mixing valve"
         self.manufacturer = "Rehau"
@@ -192,7 +192,7 @@ class RehauNeasmart2Dehumidifier:
 
     def __init__(self, dehumidifier_id: int, hub: RehauNeasmart2ClimateControlSystem) -> None:
         self._id = f"{hub.id}_{dehumidifier_id}"
-        self.name = f"{hub.name} Dehumidifier #{dehumidifier_id}"
+        self.name = f"Dehumidifier #{dehumidifier_id}"
         self.hub = hub
         self.model = "Dehumidifier with optional hydronic battery"
         self.manufacturer = "Rehau"
@@ -219,7 +219,7 @@ class RehauNeasmart2Pump:
 
     def __init__(self, pump_id: int, hub: RehauNeasmart2ClimateControlSystem) -> None:
         self._id = f"{hub.id}_{pump_id}"
-        self.name = f"{hub.name} Extra Pump #{pump_id}"
+        self.name = f"Extra Pump #{pump_id}"
         self.hub = hub
         self.model = "On-Off 24/230v Pump"
         self.manufacturer = "Rehau"
