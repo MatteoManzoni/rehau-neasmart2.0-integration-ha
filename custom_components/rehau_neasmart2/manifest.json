@@ -1,15 +1,18 @@
 {
   "domain": "rehau_neasmart2",
   "name": "Rehau Neasmart 2.0",
+  "integration_type": "hub",
   "codeowners": [
     "@MatteoManzoni"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://www.home-assistant.io/integrations/rehau_neasmart2",
+  "documentation": "https://github.com/MatteoManzoni/rehau-neasmart2.0-integration-ha",
+  "documentation": "https://github.com/MatteoManzoni/rehau-neasmart2.0-integration-ha/issues",
   "homekit": {},
   "iot_class": "local_polling",
   "requirements": [],
   "ssdp": [],
-  "zeroconf": []
+  "zeroconf": [],
+  "version": "0.0.0"
 }
