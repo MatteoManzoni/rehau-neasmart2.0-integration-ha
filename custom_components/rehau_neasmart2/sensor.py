@@ -18,7 +18,13 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     hub = hass.data[DOMAIN][config_entry.entry_id]
-    devices = [RehauNeasmart2OutsideTemperatureSensor(hub), RehauNeasmart2FilteredOutsideTemperatureSensor(hub)]
+    devices = [
+        RehauNeasmart2OutsideTemperatureSensor(hub),
+        RehauNeasmart2FilteredOutsideTemperatureSensor(hub),
+        RehauNeasmart2ErrorsPresentSensor(hub),
+        RehauNeasmart2WarningsPresentSensor(hub),
+        RehauNeasmart2HintsPresentSensor(hub)
+    ]
 
     for mixg in hub.mixgs:
         devices.append(RehauNeasmart2MixedGroupFlowTemperatureSensor(mixg))
@@ -93,6 +99,60 @@ class RehauNeasmart2FilteredOutsideTemperatureSensor(RehauNeasmart2GenericSensor
             self._state = filtered_outside_temperature
         else:
             _LOGGER.error(f"Error updating {self._device.id}_filtered_outside_temperature")
+
+
+class RehauNeasmart2ErrorsPresentSensor(RehauNeasmart2GenericSensor):
+    device_class = "enum"
+    _attr_options = list(PRESENCE_STATES.values())
+    _state = PRESENCE_STATES[False]
+
+    def __init__(self, device):
+        super().__init__(device)
+        self._attr_unique_id = f"{self._device.id}_errors_presence"
+        self._attr_name = f"{self._device.name} Errors"
+
+    async def async_update(self) -> None:
+        errors_present = await self._device.get_notification_errors()
+        if errors_present is not None:
+            self._state = PRESENCE_STATES[errors_present]
+        else:
+            _LOGGER.error(f"Error updating {self._device.id}_errors_presence")
+
+
+class RehauNeasmart2WarningsPresentSensor(RehauNeasmart2GenericSensor):
+    device_class = "enum"
+    _attr_options = list(PRESENCE_STATES.values())
+    _state = PRESENCE_STATES[False]
+
+    def __init__(self, device):
+        super().__init__(device)
+        self._attr_unique_id = f"{self._device.id}_warnings_presence"
+        self._attr_name = f"{self._device.name} Warnings"
+
+    async def async_update(self) -> None:
+        warnings_present = await self._device.get_notification_warnings()
+        if warnings_present is not None:
+            self._state = PRESENCE_STATES[warnings_present]
+        else:
+            _LOGGER.error(f"Error updating {self._device.id}_warnings_presence")
+
+
+class RehauNeasmart2HintsPresentSensor(RehauNeasmart2GenericSensor):
+    device_class = "enum"
+    _attr_options = list(PRESENCE_STATES.values())
+    _state = PRESENCE_STATES[False]
+
+    def __init__(self, device):
+        super().__init__(device)
+        self._attr_unique_id = f"{self._device.id}_hints_presence"
+        self._attr_name = f"{self._device.name} Hints"
+
+    async def async_update(self) -> None:
+        hints_present = await self._device.get_notification_hints()
+        if hints_present is not None:
+            self._state = PRESENCE_STATES[hints_present]
+        else:
+            _LOGGER.error(f"Error updating {self._device.id}_hints_presence")
 
 
 class RehauNeasmart2MixedGroupFlowTemperatureSensor(RehauNeasmart2GenericSensor):

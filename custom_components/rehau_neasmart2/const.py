@@ -5,6 +5,10 @@ BINARY_STATUSES = {
     0: "Off",
     1: "On"
 }
+PRESENCE_STATES = {
+    True: "Present",
+    False: "Not Present"
+}
 PRESET_STATES_MAPPING = {
     "Normal": 1,
     "Reduced": 2,

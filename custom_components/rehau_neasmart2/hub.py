@@ -79,6 +79,33 @@ class RehauNeasmart2ClimateControlSystem:
         )
         return filtered_outside_temperature
 
+    async def get_notification_hints(self) -> bool | None:
+        hints_present = await self.hass.async_add_executor_job(
+            self.data_getter_helper,
+            "notifications",
+            "hints_present",
+            None
+        )
+        return hints_present
+
+    async def get_notification_warnings(self) -> bool | None:
+        warnings_present = await self.hass.async_add_executor_job(
+            self.data_getter_helper,
+            "notifications",
+            "warnings_present",
+            None
+        )
+        return warnings_present
+
+    async def get_notification_errors(self) -> bool | None:
+        errors_present = await self.hass.async_add_executor_job(
+            self.data_getter_helper,
+            "notifications",
+            "error_present",
+            None
+        )
+        return errors_present
+
     async def get_global_state(self) -> int | None:
         state = await self.hass.async_add_executor_job(
             self.data_getter_helper,
