@@ -1,7 +1,7 @@
 """Constants for the Rehau Neasmart 2.0 integration."""
 
 DOMAIN = "rehau_neasmart2"
-BINARY_STATUS = {
+BINARY_STATUSES = {
     0: "Off",
     1: "On"
 }

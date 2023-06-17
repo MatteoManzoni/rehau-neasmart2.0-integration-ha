@@ -7,7 +7,7 @@ import requests
 
 from homeassistant.core import HomeAssistant
 from .const import (
-    BINARY_STATUS
+    BINARY_STATUSES
 )
 import logging
 
@@ -184,7 +184,7 @@ class RehauNeasmart2MixedGroup:
             None
         )
 
-        return BINARY_STATUS[pump_state]
+        return pump_state
 
 
 class RehauNeasmart2Dehumidifier:
@@ -211,7 +211,7 @@ class RehauNeasmart2Dehumidifier:
             None
         )
 
-        return BINARY_STATUS[dehumidifier_state]
+        return BINARY_STATUSES[dehumidifier_state]
 
 
 class RehauNeasmart2Pump:
@@ -238,7 +238,7 @@ class RehauNeasmart2Pump:
             None
         )
 
-        return BINARY_STATUS[pump_state]
+        return pump_state
 
 
 class RehauNeasmart2Zone:

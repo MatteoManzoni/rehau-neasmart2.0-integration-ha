@@ -10,7 +10,7 @@ from homeassistant.const import (
     UnitOfTemperature,
     PERCENTAGE,
 )
-from .const import DOMAIN
+from .const import DOMAIN, PRESENCE_STATES, BINARY_STATUSES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -146,6 +146,9 @@ class RehauNeasmart2MixedGroupValveOpeningSensor(RehauNeasmart2GenericSensor):
 
 
 class RehauNeasmart2MixedGroupPumpStateSensor(RehauNeasmart2GenericSensor):
+    device_class = "enum"
+    _attr_options = list(BINARY_STATUSES.values())
+    _state = BINARY_STATUSES[0]
 
     def __init__(self, device):
         super().__init__(device)
@@ -155,12 +158,15 @@ class RehauNeasmart2MixedGroupPumpStateSensor(RehauNeasmart2GenericSensor):
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
         if pump_status is not None:
-            self._state = pump_status
+            self._state = BINARY_STATUSES[pump_status]
         else:
             _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state")
 
 
 class RehauNeasmart2ExtraPumpStateSensor(RehauNeasmart2GenericSensor):
+    device_class = "enum"
+    _attr_options = list(BINARY_STATUSES.values())
+    _state = BINARY_STATUSES[0]
 
     def __init__(self, device):
         super().__init__(device)
@@ -170,7 +176,7 @@ class RehauNeasmart2ExtraPumpStateSensor(RehauNeasmart2GenericSensor):
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
         if pump_status is not None:
-            self._state = pump_status
+            self._state = BINARY_STATUSES[pump_status]
         else:
             _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state")
 
