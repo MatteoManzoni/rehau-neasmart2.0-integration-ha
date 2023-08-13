@@ -9,6 +9,7 @@ from homeassistant.const import (
     TEMPERATURE,
     UnitOfTemperature,
     PERCENTAGE,
+    DEVICE_CLASS_HUMIDITY,
 )
 from .const import DOMAIN, PRESENCE_STATES, BINARY_STATUSES
 
@@ -37,6 +38,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     for dehumidifier in hub.dehumidifiers:
         devices.append(RehauNeasmart2DehumidifierStateSensor(dehumidifier))
+
+    for zone in hub.zones:
+        devices.append(RehauNeasmart2ZoneHumidity(zone))
 
     if devices:
         async_add_entities(devices)
@@ -254,3 +258,21 @@ class RehauNeasmart2DehumidifierStateSensor(RehauNeasmart2GenericSensor):
             self._state = dehumidifier_status
         else:
             _LOGGER.error(f"Error updating {self._device.id}_dehumidifier_state")
+
+
+class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
+
+    device_class = DEVICE_CLASS_HUMIDITY
+    _attr_native_unit_of_measurement = PERCENTAGE
+
+    def __init__(self, device):
+        super().__init__(device)
+        self._attr_unique_id = f"{self._device.id}_zone_humidity"
+        self._attr_name = f"{self._device.name} Humidity"
+
+    async def async_update(self) -> None:
+        zone_data = await self._device.get_zone_data()
+        if zone_data is not None and zone_data.get("relative_humidity") is not None:
+            self._state = zone_data["relative_humidity"]
+        else:
+            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
