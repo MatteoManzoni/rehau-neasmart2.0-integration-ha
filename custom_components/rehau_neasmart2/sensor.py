@@ -41,6 +41,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     for zone in hub.zones:
         devices.append(RehauNeasmart2ZoneHumidity(zone))
+        devices.append(RehauNeasmart2ZoneTemperature(zone))
 
     if devices:
         async_add_entities(devices)
@@ -274,5 +275,21 @@ class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
         zone_data = await self._device.get_zone_data()
         if zone_data is not None and zone_data.get("relative_humidity") is not None:
             self._state = zone_data["relative_humidity"]
+        else:
+            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
+
+class RehauNeasmart2ZoneTemperature(RehauNeasmart2GenericSensor):
+    device_class = TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+
+    def __init__(self, device):
+        super().__init__(device)
+        self._attr_unique_id = f"{self._device.id}_zone_temperature"
+        self._attr_name = f"{self._device.name} Temperature"
+
+    async def async_update(self) -> None:
+        zone_data = await self._device.get_zone_data()
+        if zone_data is not None and zone_data.get("temperature") is not None:
+            self._state = zone_data["temperature"]
         else:
             _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
