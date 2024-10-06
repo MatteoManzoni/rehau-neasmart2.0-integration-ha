@@ -8,7 +8,7 @@ from homeassistant.const import ATTR_TEMPERATURE
 
 _LOGGER = logging.getLogger(__name__)
 
-
+# Asynchronously sets up the climate entities for the given configuration entry in Home Assistant.
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add sensors for passed config_entry in HA."""
     hub = hass.data[DOMAIN][config_entry.entry_id]
@@ -17,7 +17,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if devices:
         async_add_entities(devices)
 
-
+# Base class for Rehau Neasmart2 climate entities, inheriting from ClimateEntity and RestoreEntity.
 class RehauNeasmart2GenericClimateEntity(ClimateEntity, RestoreEntity):
     _attr_has_entity_name = False
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
@@ -26,6 +26,7 @@ class RehauNeasmart2GenericClimateEntity(ClimateEntity, RestoreEntity):
         self._device = device
         self._state = None
 
+    # Provides device information for Home Assistant.
     @property
     def device_info(self):
         return DeviceInfo(
@@ -35,11 +36,12 @@ class RehauNeasmart2GenericClimateEntity(ClimateEntity, RestoreEntity):
             model=self._device.model,
         )
 
+    # Indicates whether the device is available based on the hub's online status.
     @property
     def available(self) -> bool:
         return self._device.hub.online
 
-
+# Specific class for Rehau Neasmart2 zone climate entities.
 class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
     def __init__(self, device):
         super().__init__(device)
@@ -56,6 +58,7 @@ class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
         self._attr_current_temperature = None
         self._attr_target_temperature = None
 
+    # Asynchronously updates the climate entity's state based on the zone data.
     async def async_update(self) -> None:
         zone_data = await self._device.get_zone_data()
         if zone_data is not None and \
@@ -70,10 +73,12 @@ class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
         else:
             _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
 
+    # Asynchronously sets the preset mode for the climate entity.
     async def async_set_preset_mode(self, preset_mode: str):
         if not await self._device.set_zone_state(PRESET_STATES_MAPPING[preset_mode]):
             _LOGGER.error(f"Error setting preset mode for {self._attr_unique_id} thermostat")
 
+    # Asynchronously sets the target temperature for the climate entity.
     async def async_set_temperature(self, **kwargs):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
