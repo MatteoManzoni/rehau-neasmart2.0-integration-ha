@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Il dispositivo è già configurato"
+        },
+        "error": {
+            "cannot_connect": "Impossibile connettersi al server Modbus/Rest shim",
+            "too_many_zones": "Troppe zone specificate, il massimo è 48",
+            "too_many_mixg": "Troppi gruppi misti specificati, il massimo è 3",
+            "too_many_dehumidificators": "Troppi deumidificatori specificati, il massimo è 9",
+            "invalid_dehumidificator_index": "Indice deumidificatore non valido specificato, gli indici validi sono tra 1 e 9",
+            "too_many_extra_pump": "Troppe pompe specificate, il massimo è 5",
+            "invalid_pump_index": "Indice pompa non valido specificato, gli indici validi sono tra 1 e 5",
+            "unknown": "Errore sconosciuto"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "climate_system_name": "Mostra il nome del Sistema di Controllo del Clima",
+                    "neasmart_gw_server_host": "Indirizzo del server che esegue l'interfaccia Modbus/REST",
+                    "neasmart_gw_server_port": "Porta REST del server che esegue l'interfaccia Modbus/REST",
+                    "zones": "Elenco separato da virgole delle zone da configurare",
+                    "mixed_groups": "Numero di Gruppi Misti da configurare",
+                    "dehumidificators_regs_mapping": "Elenco separato da virgole degli indirizzi dei registri mappati ai Deumidificatori",
+                    "pumps_regs_mapping": "Elenco separato da virgole degli indirizzi dei registri mappati alle Pompe"
+                }
+            }
+        }
+    }
+}

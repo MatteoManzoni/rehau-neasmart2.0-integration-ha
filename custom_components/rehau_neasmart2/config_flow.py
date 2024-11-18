@@ -17,6 +17,7 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+# Define the schema for user input during the configuration flow.
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required("climate_system_name"): str,
@@ -29,30 +30,37 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     }
 )
 
-
+# Asynchronously validate the user input to ensure it allows for a successful connection.
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect.
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
 
+    # Validate the number of zones does not exceed the maximum allowed.
     if len(data["zones"].split(",")) > 48:
         raise TooManyZones
+    # Validate the number of mixed groups does not exceed the maximum allowed.
     if data.get("mixed_groups", 0) > 3:
         raise TooManyMixG
+    # Validate the number of dehumidificators does not exceed the maximum allowed.
     if len(data.get("dehumidificators_regs_mapping", "").split(",")) > 9:
         raise TooManyDehumidificators
+    # Validate each dehumidificator index is within the valid range.
     for dr in data.get("dehumidificators_regs_mapping", "").split(",") \
             if data.get("dehumidificators_regs_mapping", "") != "" else []:
         if not dr.isdecimal() or int(dr) < 1 or int(dr) > 9:
             raise InvalidDehumidificatorIndex
+    # Validate the number of extra pumps does not exceed the maximum allowed.
     if len(data.get("pumps_regs_mapping", "").split(",")) > 5:
         raise TooManyExtraPumps
+    # Validate each pump index is within the valid range.
     for pr in data.get("pumps_regs_mapping", "").split(",") \
             if data.get("pumps_regs_mapping", "") != "" else []:
         if not pr.isdecimal() or int(pr) < 1 or int(pr) > 5:
             raise InvalidPumpIndex
 
+    # Create an instance of the Rehau Neasmart 2.0 Climate Control System hub.
     neasmart_climate_control_hub = hub.RehauNeasmart2ClimateControlSystem(
         hass,
         data["climate_system_name"],
@@ -64,17 +72,19 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         data.get("pumps_regs_mapping", "")
     )
 
+    # Test the connection to the hub.
     if not await neasmart_climate_control_hub.test_connection():
         raise CannotConnect
 
     return {"title": f"{data['climate_system_name']} Climate Control System"}
 
-
+# Define the configuration flow for the Rehau Neasmart 2.0 integration.
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Rehau Neasmart 2.0."""
 
     VERSION = 1
 
+    # Handle the initial step of the configuration flow.
     async def async_step_user(
             self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -82,6 +92,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
+                # Validate the user input.
                 info = await validate_input(self.hass, user_input)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
@@ -101,36 +112,32 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
+                # Create a new entry if validation is successful.
                 return self.async_create_entry(title=info["title"], data=user_input)
 
+        # Show the form to the user with any validation errors.
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
         )
 
-
+# Define custom exceptions for various validation errors.
 class CannotConnect(HomeAssistantError):
     """Error to indicate we cannot connect."""
-
 
 class TooManyZones(HomeAssistantError):
     """Error to indicate there are too many zones."""
 
-
 class TooManyMixG(HomeAssistantError):
     """Error to indicate there are too many mixed group."""
-
 
 class TooManyDehumidificators(HomeAssistantError):
     """Error to indicate there are too many dehumidificators."""
 
-
 class InvalidDehumidificatorIndex(HomeAssistantError):
     """Error to indicate there are too many pumps."""
 
-
 class TooManyExtraPumps(HomeAssistantError):
     """Error to indicate there are too many pumps."""
-
 
 class InvalidPumpIndex(HomeAssistantError):
     """Error to indicate there are too many pumps."""
