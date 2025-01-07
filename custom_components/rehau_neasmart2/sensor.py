@@ -1,15 +1,13 @@
 """Platform for sensor integration."""
 
 import logging
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.restore_state import RestoreEntity
 
 from homeassistant.const import (
-    TEMPERATURE,
     UnitOfTemperature,
     PERCENTAGE,
-    DEVICE_CLASS_HUMIDITY,
 )
 from .const import DOMAIN, PRESENCE_STATES, BINARY_STATUSES
 
@@ -73,7 +71,7 @@ class RehauNeasmart2GenericSensor(SensorEntity, RestoreEntity):
 
 
 class RehauNeasmart2OutsideTemperatureSensor(RehauNeasmart2GenericSensor):
-    device_class = TEMPERATURE
+    device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, device):
@@ -90,7 +88,7 @@ class RehauNeasmart2OutsideTemperatureSensor(RehauNeasmart2GenericSensor):
 
 
 class RehauNeasmart2FilteredOutsideTemperatureSensor(RehauNeasmart2GenericSensor):
-    device_class = TEMPERATURE
+    device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, device):
@@ -161,7 +159,7 @@ class RehauNeasmart2HintsPresentSensor(RehauNeasmart2GenericSensor):
 
 
 class RehauNeasmart2MixedGroupFlowTemperatureSensor(RehauNeasmart2GenericSensor):
-    device_class = TEMPERATURE
+    device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, device):
@@ -178,7 +176,7 @@ class RehauNeasmart2MixedGroupFlowTemperatureSensor(RehauNeasmart2GenericSensor)
 
 
 class RehauNeasmart2MixedGroupReturnTemperatureSensor(RehauNeasmart2GenericSensor):
-    device_class = TEMPERATURE
+    device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, device):
@@ -263,7 +261,7 @@ class RehauNeasmart2DehumidifierStateSensor(RehauNeasmart2GenericSensor):
 
 class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
 
-    device_class = DEVICE_CLASS_HUMIDITY
+    device_class = SensorDeviceClass.HUMIDITY
     _attr_native_unit_of_measurement = PERCENTAGE
 
     def __init__(self, device):
@@ -279,7 +277,7 @@ class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
             _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
 
 class RehauNeasmart2ZoneTemperature(RehauNeasmart2GenericSensor):
-    device_class = TEMPERATURE
+    device_class = SensorDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, device):
