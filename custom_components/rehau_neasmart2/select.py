@@ -7,6 +7,7 @@ from homeassistant.components.select import SelectEntity
 
 # Initialize a logger for this module.
 _LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 1
 
 # Asynchronously sets up the select entities for the given configuration entry in Home Assistant.
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -63,7 +64,11 @@ class RehauNeasmart2MasterGlobalModeSelect(RehauNeasmart2GenericSelect):
         """Asynchronously update the current global climate mode."""
         mode = await self._device.get_global_mode()
         if mode is not None:
-            self._attr_current_option = PRESET_CLIMATE_MODES_MAPPING_REVERSE[mode]  # Update the current option.
+            current_option = PRESET_CLIMATE_MODES_MAPPING_REVERSE.get(mode)
+            if current_option is None:
+                _LOGGER.error(f"Error updating global climate mode, invalid mode {mode}")
+                return
+            self._attr_current_option = current_option
         else:
             _LOGGER.error(f"Error updating global climate mode")  # Log an error if updating the mode fails.
 
@@ -86,6 +91,10 @@ class RehauNeasmart2MasterGlobalStateSelect(RehauNeasmart2GenericSelect):
         """Asynchronously update the current global climate state."""
         state = await self._device.get_global_state()
         if state is not None:
-            self._attr_current_option = PRESET_STATES_MAPPING_REVERSE[state]  # Update the current option.
+            current_option = PRESET_STATES_MAPPING_REVERSE.get(state)
+            if current_option is None:
+                _LOGGER.error(f"Error updating global climate state, invalid state {state}")
+                return
+            self._attr_current_option = current_option
         else:
             _LOGGER.error(f"Error updating global climate state")  # Log an error if updating the state fails.

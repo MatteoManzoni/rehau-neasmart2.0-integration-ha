@@ -68,8 +68,8 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         data["neasmart_gw_server_port"],
         data["zones"],
         data.get("mixed_groups", 0),
+        data.get("pumps_regs_mapping", ""),
         data.get("dehumidificators_regs_mapping", ""),
-        data.get("pumps_regs_mapping", "")
     )
 
     # Test the connection to the hub.

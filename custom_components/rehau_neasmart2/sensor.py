@@ -12,6 +12,7 @@ from homeassistant.const import (
 from .const import DOMAIN, PRESENCE_STATES, BINARY_STATUSES
 
 _LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 1
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -221,7 +222,11 @@ class RehauNeasmart2MixedGroupPumpStateSensor(RehauNeasmart2GenericSensor):
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
         if pump_status is not None:
-            self._state = BINARY_STATUSES[pump_status]
+            mapped_state = BINARY_STATUSES.get(pump_status)
+            if mapped_state is None:
+                _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state, invalid state {pump_status}")
+                return
+            self._state = mapped_state
         else:
             _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state")
 
@@ -239,7 +244,11 @@ class RehauNeasmart2ExtraPumpStateSensor(RehauNeasmart2GenericSensor):
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
         if pump_status is not None:
-            self._state = BINARY_STATUSES[pump_status]
+            mapped_state = BINARY_STATUSES.get(pump_status)
+            if mapped_state is None:
+                _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state, invalid state {pump_status}")
+                return
+            self._state = mapped_state
         else:
             _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state")
 

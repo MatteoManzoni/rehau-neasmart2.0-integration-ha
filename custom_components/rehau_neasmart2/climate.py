@@ -7,6 +7,7 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.const import ATTR_TEMPERATURE
 
 _LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 1
 
 # Asynchronously sets up the climate entities for the given configuration entry in Home Assistant.
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -66,7 +67,15 @@ class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
                 zone_data.get("relative_humidity") is not None and \
                 zone_data.get("temperature") is not None and \
                 zone_data.get("setpoint") is not None:
-            self._attr_preset_mode = PRESET_STATES_MAPPING_REVERSE[zone_data["state"]]
+            preset_mode = PRESET_STATES_MAPPING_REVERSE.get(zone_data["state"])
+            if preset_mode is None:
+                _LOGGER.error(
+                    "Error updating %s thermostat, unknown preset state: %s",
+                    self._attr_unique_id,
+                    zone_data["state"],
+                )
+                return
+            self._attr_preset_mode = preset_mode
             self._attr_current_humidity = zone_data["relative_humidity"]
             self._attr_current_temperature = zone_data["temperature"]
             self._attr_target_temperature = zone_data["setpoint"]
