@@ -59,6 +59,20 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
             if data.get("pumps_regs_mapping", "") != "" else []:
         if not pr.isdecimal() or int(pr) < 1 or int(pr) > 5:
             raise InvalidPumpIndex
+    # Validate new-format zone addresses where present.
+    for entry in data["zones"].split(","):
+        entry = entry.strip()
+        if ":" in entry:
+            try:
+                addr, _ = entry.split(":", 1)
+                parts = addr.split(".")
+                if len(parts) != 2:
+                    raise InvalidZoneAddress
+                base, channel = int(parts[0]), int(parts[1])
+                if not (1 <= base <= 5) or not (1 <= channel <= 12):
+                    raise InvalidZoneAddress
+            except ValueError:
+                raise InvalidZoneAddress
 
     # Create an instance of the Rehau Neasmart 2.0 Climate Control System hub.
     neasmart_climate_control_hub = hub.RehauNeasmart2ClimateControlSystem(
@@ -108,6 +122,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "too_many_extra_pump"
             except InvalidPumpIndex:
                 errors["base"] = "invalid_pump_index"
+            except InvalidZoneAddress:
+                errors["base"] = "invalid_zone_address"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -141,3 +157,6 @@ class TooManyExtraPumps(HomeAssistantError):
 
 class InvalidPumpIndex(HomeAssistantError):
     """Error to indicate there are too many pumps."""
+
+class InvalidZoneAddress(HomeAssistantError):
+    """Error to indicate a zone address entry is malformed."""

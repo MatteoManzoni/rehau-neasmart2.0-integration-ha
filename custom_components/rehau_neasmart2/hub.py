@@ -66,10 +66,14 @@ class RehauNeasmart2ClimateControlSystem:
             RehauNeasmart2Pump(int(pumps_topology[p]), self)
             for p in range(0, len(pumps_topology))
         ]
-        self.zones = [
-            RehauNeasmart2Zone((z // 12) + 1, z - (12 * (z // 12)) + 1, zones_name_array[z], self)
-            for z in range(0, len(zones_name_array))
-        ]
+        for z, entry in enumerate(zones_name_array):
+            entry = entry.strip()
+            if ":" in entry:
+                addr, name = entry.split(":", 1)
+                base_str, channel_str = addr.split(".")
+                self.zones.append(RehauNeasmart2Zone(int(base_str), int(channel_str), name.strip(), self))
+            else:
+                self.zones.append(RehauNeasmart2Zone((z // 12) + 1, z - (12 * (z // 12)) + 1, entry, self))
 
     @property
     def id(self) -> str:

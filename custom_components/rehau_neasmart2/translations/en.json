@@ -11,6 +11,7 @@
             "invalid_dehumidificator_index": "Invalid dehumidificator index specified, valid indexes are between 1 and 9",
             "too_many_extra_pump": "Too many pumps specified, maximum is 5",
             "invalid_pump_index": "Invalid pump index specified, valid indexes are between 1 and 5",
+            "invalid_zone_address": "A zone address entry is malformed. Use base.channel:name (e.g. 1.3:Kitchen).",
             "unknown": "Unknown error"
         },
         "step": {
