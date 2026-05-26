@@ -187,8 +187,7 @@ class RehauNeasmart2ClimateControlSystem:
         if json_response is None:
             return default
 
-        data = json_response.get(key)
-        if data is None:
+        if key not in json_response:
             self._set_gateway_online(
                 False,
                 (
@@ -196,6 +195,10 @@ class RehauNeasmart2ClimateControlSystem:
                     f"cannot access {key} in response: {json_response}"
                 ),
             )
+            return default
+
+        data = json_response[key]
+        if data is None:
             return default
 
         return data

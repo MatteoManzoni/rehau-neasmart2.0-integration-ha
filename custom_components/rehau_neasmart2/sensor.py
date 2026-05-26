@@ -81,11 +81,7 @@ class RehauNeasmart2OutsideTemperatureSensor(RehauNeasmart2GenericSensor):
         self._attr_name = f"{self._device.name} Outside Temperature"
 
     async def async_update(self) -> None:
-        outside_temperature = await self._device.get_outside_temperature()
-        if outside_temperature is not None:
-            self._state = outside_temperature
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_outside_temperature")
+        self._state = await self._device.get_outside_temperature()
 
 
 class RehauNeasmart2FilteredOutsideTemperatureSensor(RehauNeasmart2GenericSensor):
@@ -98,11 +94,7 @@ class RehauNeasmart2FilteredOutsideTemperatureSensor(RehauNeasmart2GenericSensor
         self._attr_name = f"{self._device.name} Filtered Outside Temperature"
 
     async def async_update(self) -> None:
-        filtered_outside_temperature = await self._device.get_filtered_outside_temperature()
-        if filtered_outside_temperature is not None:
-            self._state = filtered_outside_temperature
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_filtered_outside_temperature")
+        self._state = await self._device.get_filtered_outside_temperature()
 
 
 class RehauNeasmart2ErrorsPresentSensor(RehauNeasmart2GenericSensor):
@@ -117,10 +109,7 @@ class RehauNeasmart2ErrorsPresentSensor(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         errors_present = await self._device.get_notification_errors()
-        if errors_present is not None:
-            self._state = PRESENCE_STATES[errors_present]
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_errors_presence")
+        self._state = PRESENCE_STATES[errors_present] if errors_present is not None else None
 
 
 class RehauNeasmart2WarningsPresentSensor(RehauNeasmart2GenericSensor):
@@ -135,10 +124,7 @@ class RehauNeasmart2WarningsPresentSensor(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         warnings_present = await self._device.get_notification_warnings()
-        if warnings_present is not None:
-            self._state = PRESENCE_STATES[warnings_present]
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_warnings_presence")
+        self._state = PRESENCE_STATES[warnings_present] if warnings_present is not None else None
 
 
 class RehauNeasmart2HintsPresentSensor(RehauNeasmart2GenericSensor):
@@ -153,10 +139,7 @@ class RehauNeasmart2HintsPresentSensor(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         hints_present = await self._device.get_notification_hints()
-        if hints_present is not None:
-            self._state = PRESENCE_STATES[hints_present]
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_hints_presence")
+        self._state = PRESENCE_STATES[hints_present] if hints_present is not None else None
 
 
 class RehauNeasmart2MixedGroupFlowTemperatureSensor(RehauNeasmart2GenericSensor):
@@ -169,11 +152,7 @@ class RehauNeasmart2MixedGroupFlowTemperatureSensor(RehauNeasmart2GenericSensor)
         self._attr_name = f"{self._device.name} Flow Temperature"
 
     async def async_update(self) -> None:
-        flow_temperature = await self._device.get_flow_temperature()
-        if flow_temperature is not None:
-            self._state = flow_temperature
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_flow_temperature")
+        self._state = await self._device.get_flow_temperature()
 
 
 class RehauNeasmart2MixedGroupReturnTemperatureSensor(RehauNeasmart2GenericSensor):
@@ -186,11 +165,7 @@ class RehauNeasmart2MixedGroupReturnTemperatureSensor(RehauNeasmart2GenericSenso
         self._attr_name = f"{self._device.name} Return Temperature"
 
     async def async_update(self) -> None:
-        return_temperature = await self._device.get_return_temperature()
-        if return_temperature is not None:
-            self._state = return_temperature
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_return_temperature")
+        self._state = await self._device.get_return_temperature()
 
 
 class RehauNeasmart2MixedGroupValveOpeningSensor(RehauNeasmart2GenericSensor):
@@ -202,11 +177,7 @@ class RehauNeasmart2MixedGroupValveOpeningSensor(RehauNeasmart2GenericSensor):
         self._attr_name = f"{self._device.name} Valve Opening"
 
     async def async_update(self) -> None:
-        valve_opening = await self._device.get_valve_opening_percentage()
-        if valve_opening is not None:
-            self._state = valve_opening
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_valve_opening")
+        self._state = await self._device.get_valve_opening_percentage()
 
 
 class RehauNeasmart2MixedGroupPumpStateSensor(RehauNeasmart2GenericSensor):
@@ -221,14 +192,14 @@ class RehauNeasmart2MixedGroupPumpStateSensor(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
-        if pump_status is not None:
-            mapped_state = BINARY_STATUSES.get(pump_status)
-            if mapped_state is None:
-                _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state, invalid state {pump_status}")
-                return
-            self._state = mapped_state
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state")
+        if pump_status is None:
+            self._state = None
+            return
+        mapped_state = BINARY_STATUSES.get(pump_status)
+        if mapped_state is None:
+            _LOGGER.error(f"Error updating {self._device.id}_mixedgroup_pump_state, invalid state {pump_status}")
+            return
+        self._state = mapped_state
 
 
 class RehauNeasmart2ExtraPumpStateSensor(RehauNeasmart2GenericSensor):
@@ -243,14 +214,14 @@ class RehauNeasmart2ExtraPumpStateSensor(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         pump_status = await self._device.get_pump_state()
-        if pump_status is not None:
-            mapped_state = BINARY_STATUSES.get(pump_status)
-            if mapped_state is None:
-                _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state, invalid state {pump_status}")
-                return
-            self._state = mapped_state
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state")
+        if pump_status is None:
+            self._state = None
+            return
+        mapped_state = BINARY_STATUSES.get(pump_status)
+        if mapped_state is None:
+            _LOGGER.error(f"Error updating {self._device.id}_extra_pump_state, invalid state {pump_status}")
+            return
+        self._state = mapped_state
 
 
 class RehauNeasmart2DehumidifierStateSensor(RehauNeasmart2GenericSensor):
@@ -261,11 +232,7 @@ class RehauNeasmart2DehumidifierStateSensor(RehauNeasmart2GenericSensor):
         self._attr_name = f"{self._device.name} Dehumidifiers State"
 
     async def async_update(self) -> None:
-        dehumidifier_status = await self._device.get_dehumidifier_state()
-        if dehumidifier_status is not None:
-            self._state = dehumidifier_status
-        else:
-            _LOGGER.error(f"Error updating {self._device.id}_dehumidifier_state")
+        self._state = await self._device.get_dehumidifier_state()
 
 
 class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
@@ -280,10 +247,7 @@ class RehauNeasmart2ZoneHumidity(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         zone_data = await self._device.get_zone_data()
-        if zone_data is not None and zone_data.get("relative_humidity") is not None:
-            self._state = zone_data["relative_humidity"]
-        else:
-            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
+        self._state = zone_data.get("relative_humidity") if zone_data else None
 
 class RehauNeasmart2ZoneTemperature(RehauNeasmart2GenericSensor):
     device_class = SensorDeviceClass.TEMPERATURE
@@ -296,7 +260,4 @@ class RehauNeasmart2ZoneTemperature(RehauNeasmart2GenericSensor):
 
     async def async_update(self) -> None:
         zone_data = await self._device.get_zone_data()
-        if zone_data is not None and zone_data.get("temperature") is not None:
-            self._state = zone_data["temperature"]
-        else:
-            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
+        self._state = zone_data.get("temperature") if zone_data else None

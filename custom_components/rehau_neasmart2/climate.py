@@ -62,25 +62,27 @@ class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
     # Asynchronously updates the climate entity's state based on the zone data.
     async def async_update(self) -> None:
         zone_data = await self._device.get_zone_data()
-        if zone_data is not None and \
-                zone_data.get("state") is not None and \
-                zone_data.get("relative_humidity") is not None and \
-                zone_data.get("temperature") is not None and \
-                zone_data.get("setpoint") is not None:
-            preset_mode = PRESET_STATES_MAPPING_REVERSE.get(zone_data["state"])
+        if not zone_data:
+            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
+            return
+
+        state = zone_data.get("state")
+        if state is None:
+            self._attr_preset_mode = None
+        else:
+            preset_mode = PRESET_STATES_MAPPING_REVERSE.get(state)
             if preset_mode is None:
                 _LOGGER.error(
                     "Error updating %s thermostat, unknown preset state: %s",
                     self._attr_unique_id,
-                    zone_data["state"],
+                    state,
                 )
-                return
-            self._attr_preset_mode = preset_mode
-            self._attr_current_humidity = zone_data["relative_humidity"]
-            self._attr_current_temperature = zone_data["temperature"]
-            self._attr_target_temperature = zone_data["setpoint"]
-        else:
-            _LOGGER.error(f"Error updating {self._attr_unique_id} thermostat")
+            else:
+                self._attr_preset_mode = preset_mode
+
+        self._attr_current_humidity = zone_data.get("relative_humidity")
+        self._attr_current_temperature = zone_data.get("temperature")
+        self._attr_target_temperature = zone_data.get("setpoint")
 
     # Asynchronously sets the preset mode for the climate entity.
     async def async_set_preset_mode(self, preset_mode: str):
