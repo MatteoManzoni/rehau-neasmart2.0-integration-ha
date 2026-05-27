@@ -63,11 +63,13 @@ class RehauNeasmart2MasterGlobalModeSelect(RehauNeasmart2GenericSelect):
     async def async_update(self) -> None:
         """Asynchronously update the current global climate mode."""
         mode = await self._device.get_global_mode()
-        if mode is None or mode == 0:
+        if mode is None:
             self._attr_current_option = None
             return
         current_option = PRESET_CLIMATE_MODES_MAPPING_REVERSE.get(mode)
         if current_option is None:
+            if mode == 0:
+                return
             _LOGGER.error(f"Error updating global climate mode, invalid mode {mode}")
             return
         self._attr_current_option = current_option
@@ -90,11 +92,13 @@ class RehauNeasmart2MasterGlobalStateSelect(RehauNeasmart2GenericSelect):
     async def async_update(self) -> None:
         """Asynchronously update the current global climate state."""
         state = await self._device.get_global_state()
-        if state is None or state == 0:
+        if state is None:
             self._attr_current_option = None
             return
         current_option = PRESET_STATES_MAPPING_REVERSE.get(state)
         if current_option is None:
+            if state == 0:
+                return
             _LOGGER.error(f"Error updating global climate state, invalid state {state}")
             return
         self._attr_current_option = current_option

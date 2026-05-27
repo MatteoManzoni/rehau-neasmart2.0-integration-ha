@@ -72,6 +72,8 @@ class RehauNeasmart2ZoneClimateEntity(RehauNeasmart2GenericClimateEntity):
         else:
             preset_mode = PRESET_STATES_MAPPING_REVERSE.get(state)
             if preset_mode is None:
+                if state == 0:
+                    return
                 _LOGGER.error(
                     "Error updating %s thermostat, unknown preset state: %s",
                     self._attr_unique_id,
