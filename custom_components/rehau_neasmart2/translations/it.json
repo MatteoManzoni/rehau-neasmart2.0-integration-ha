@@ -5,12 +5,13 @@
         },
         "error": {
             "cannot_connect": "Impossibile connettersi al server Modbus/Rest shim",
-            "too_many_zones": "Troppe zone specificate, il massimo è 48",
+            "too_many_zones": "Troppe zone specificate, il massimo è 60",
             "too_many_mixg": "Troppi gruppi misti specificati, il massimo è 3",
             "too_many_dehumidificators": "Troppi deumidificatori specificati, il massimo è 9",
             "invalid_dehumidificator_index": "Indice deumidificatore non valido specificato, gli indici validi sono tra 1 e 9",
             "too_many_extra_pump": "Troppe pompe specificate, il massimo è 5",
             "invalid_pump_index": "Indice pompa non valido specificato, gli indici validi sono tra 1 e 5",
+            "invalid_zone_address": "Una zona contiene un indirizzo non valido. Usa base.canale:nome, per esempio 1.3:Cucina.",
             "unknown": "Errore sconosciuto"
         },
         "step": {

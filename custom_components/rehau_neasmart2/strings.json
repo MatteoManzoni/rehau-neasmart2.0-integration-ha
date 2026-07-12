@@ -21,6 +21,7 @@
       "invalid_dehumidificator_index": "[%key:common::config_flow::error::invalid_dehumidificator_index%]",
       "too_many_extra_pump": "[%key:common::config_flow::error::too_many_extra_pump%]",
       "invalid_pump_index": "[%key:common::config_flow::error::invalid_pump_index%]",
+      "invalid_zone_address": "A zone address entry is malformed. Use base.channel:name, for example 1.3:Kitchen.",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {

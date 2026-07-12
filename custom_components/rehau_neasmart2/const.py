@@ -1,6 +1,9 @@
 """Constants for the Rehau Neasmart 2.0 integration."""
 
 DOMAIN = "rehau_neasmart2"
+MAX_BASES = 5
+MAX_ZONES_PER_BASE = 12
+MAX_ZONES = MAX_BASES * MAX_ZONES_PER_BASE
 BINARY_STATUSES = {
     0: "Off",
     1: "On"

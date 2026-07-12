@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import requests
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -13,7 +12,8 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from . import hub
 
-from .const import DOMAIN
+from .const import DOMAIN, MAX_ZONES
+from .zone_config import parse_zone_entries
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,8 +38,12 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     """
 
     # Validate the number of zones does not exceed the maximum allowed.
-    if len(data["zones"].split(",")) > 48:
+    if len(data["zones"].split(",")) > MAX_ZONES:
         raise TooManyZones
+    try:
+        parse_zone_entries(data["zones"])
+    except ValueError as err:
+        raise InvalidZoneAddress from err
     # Validate the number of mixed groups does not exceed the maximum allowed.
     if data.get("mixed_groups", 0) > 3:
         raise TooManyMixG
@@ -108,6 +112,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "too_many_extra_pump"
             except InvalidPumpIndex:
                 errors["base"] = "invalid_pump_index"
+            except InvalidZoneAddress:
+                errors["base"] = "invalid_zone_address"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -141,3 +147,6 @@ class TooManyExtraPumps(HomeAssistantError):
 
 class InvalidPumpIndex(HomeAssistantError):
     """Error to indicate there are too many pumps."""
+
+class InvalidZoneAddress(HomeAssistantError):
+    """Error to indicate a zone address entry is malformed."""

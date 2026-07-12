@@ -5,12 +5,13 @@
         },
         "error": {
             "cannot_connect": "Cannot connect to Modbus/Rest shim server",
-            "too_many_zones": "Too many zones specified, maximum is 48",
+            "too_many_zones": "Too many zones specified, maximum is 60",
             "too_many_mixg": "Too many mixed groups specified, maximum is 3",
             "too_many_dehumidificators": "Too many dehumidificators specified, maximum is 9",
             "invalid_dehumidificator_index": "Invalid dehumidificator index specified, valid indexes are between 1 and 9",
             "too_many_extra_pump": "Too many pumps specified, maximum is 5",
             "invalid_pump_index": "Invalid pump index specified, valid indexes are between 1 and 5",
+            "invalid_zone_address": "A zone address entry is malformed. Use base.channel:name, for example 1.3:Kitchen.",
             "unknown": "Unknown error"
         },
         "step": {

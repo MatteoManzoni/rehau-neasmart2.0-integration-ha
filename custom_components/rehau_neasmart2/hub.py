@@ -17,6 +17,7 @@ from .const import (
     MIN_REASONABLE_TEMPERATURE,
     REQUEST_TIMEOUT_SECONDS,
 )
+from .zone_config import parse_zone_entries
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class RehauNeasmart2ClimateControlSystem:
 
         dehumidifiers_topology = dehumidifiers.split(",") if dehumidifiers != "" else []
         pumps_topology = pumps.split(",") if pumps != "" else []
-        zones_name_array = zones.split(",")
+        zone_entries = parse_zone_entries(zones)
 
         self.mixgs = [RehauNeasmart2MixedGroup(m, self) for m in range(1, mixg + 1)]
         self.dehumidifiers = [
@@ -67,8 +68,8 @@ class RehauNeasmart2ClimateControlSystem:
             for p in range(0, len(pumps_topology))
         ]
         self.zones = [
-            RehauNeasmart2Zone((z // 12) + 1, z - (12 * (z // 12)) + 1, zones_name_array[z], self)
-            for z in range(0, len(zones_name_array))
+            RehauNeasmart2Zone(base_id, channel_id, name, self)
+            for base_id, channel_id, name in zone_entries
         ]
 
     @property
@@ -183,8 +184,7 @@ class RehauNeasmart2ClimateControlSystem:
         if json_response is None:
             return default
 
-        data = json_response.get(key)
-        if data is None:
+        if key not in json_response:
             self._set_gateway_online(
                 False,
                 (
@@ -192,6 +192,10 @@ class RehauNeasmart2ClimateControlSystem:
                     f"cannot access {key} in response: {json_response}"
                 ),
             )
+            return default
+
+        data = json_response[key]
+        if data is None:
             return default
 
         return data

@@ -15,7 +15,7 @@ This integration leverages a dedicated add-on to shim the Sysbus protocol (Modbu
   - Show name for the Climate Control System eg. *Matteo's Home*
   - Address where the add-on is running
   - Port where the add-on is running
-  - Comma separated list of the zones names(only contiguous, single thermostat zones are supported) eg. *Kitchen,Master Bedroom,Living Room,Bathroom* (mapping between zone name and index can be found connecting to the Neasmart base station in AP mode)
+  - Comma separated list of the zones to configure. The existing sequential format still works, e.g. *Kitchen,Master Bedroom,Living Room,Bathroom*. For multi-base or non-contiguous channel layouts, use explicit *base.channel:name* entries, e.g. *1.1:Kitchen,1.3:Master Bedroom,2.1:Living Room*. Base IDs 1-5 and channel IDs 1-12 are supported, matching the documented master plus four-slave topology.
   - Number of mixed groups to configure (optional, 1-3)
   - Comma separated list of dehumidifiers id to configure (this will require testing which id contains which dehumidifier as the mapping is based on U/B Modules registers mappings)
   - Comma separated list of pumps id to configure (this will require testing which id contains which pump as the mapping is based on U/R/B Modules registers mappings)
@@ -32,6 +32,7 @@ The hub will own multiple devices:
 ### Known Issues
 
 - Investigate coordinator to reduce calls per poll to Add-On
+- The documented REHAU SYSBUS/Modbus map does not expose individual room actuator output or valve state. Zone operation status is available, but it is not equivalent to a physical valve-open signal.
 - Missing Logos and such
 - Improve config flow, avoid comma separated strings
 

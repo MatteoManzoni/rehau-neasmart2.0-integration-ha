@@ -63,14 +63,15 @@ class RehauNeasmart2MasterGlobalModeSelect(RehauNeasmart2GenericSelect):
     async def async_update(self) -> None:
         """Asynchronously update the current global climate mode."""
         mode = await self._device.get_global_mode()
-        if mode is not None:
-            current_option = PRESET_CLIMATE_MODES_MAPPING_REVERSE.get(mode)
-            if current_option is None:
-                _LOGGER.error(f"Error updating global climate mode, invalid mode {mode}")
-                return
-            self._attr_current_option = current_option
-        else:
-            _LOGGER.error(f"Error updating global climate mode")  # Log an error if updating the mode fails.
+        if mode is None or mode == 0:
+            self._attr_current_option = None
+            return
+        current_option = PRESET_CLIMATE_MODES_MAPPING_REVERSE.get(mode)
+        if current_option is None:
+            _LOGGER.error(f"Error updating global climate mode, invalid mode {mode}")
+            self._attr_current_option = None
+            return
+        self._attr_current_option = current_option
 
 # Specific class for Rehau Neasmart2 global climate state select entities.
 class RehauNeasmart2MasterGlobalStateSelect(RehauNeasmart2GenericSelect):
@@ -90,11 +91,12 @@ class RehauNeasmart2MasterGlobalStateSelect(RehauNeasmart2GenericSelect):
     async def async_update(self) -> None:
         """Asynchronously update the current global climate state."""
         state = await self._device.get_global_state()
-        if state is not None:
-            current_option = PRESET_STATES_MAPPING_REVERSE.get(state)
-            if current_option is None:
-                _LOGGER.error(f"Error updating global climate state, invalid state {state}")
-                return
-            self._attr_current_option = current_option
-        else:
-            _LOGGER.error(f"Error updating global climate state")  # Log an error if updating the state fails.
+        if state is None or state == 0:
+            self._attr_current_option = None
+            return
+        current_option = PRESET_STATES_MAPPING_REVERSE.get(state)
+        if current_option is None:
+            _LOGGER.error(f"Error updating global climate state, invalid state {state}")
+            self._attr_current_option = None
+            return
+        self._attr_current_option = current_option
